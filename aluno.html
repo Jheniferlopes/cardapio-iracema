@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block content %}
+<div class="student-hero"><span class="eyebrow">PORTAL DO ESTUDANTE</span><h1>Olá, {{session.nome.split(' ')[0]}}! ✨</h1><p>Veja o cardápio atualizado da semana: café da manhã, almoço e café da tarde.</p><span class="week-pill">SEMANA DE {{inicio.strftime('%d/%m')}} A {{fim.strftime('%d/%m/%Y')}}</span></div>
+<section class="panel"><div class="panel-title"><div><span class="eyebrow blue">PLANEJAMENTO SEMANAL</span><h2>Cardápio da semana</h2></div><span class="soft-icon">♡</span></div>
+{% for c in menus %}<article class="student-menu"><div class="student-day"><b>{{dias_semana[c.data][:3]|upper}}</b><small>{{c.data[8:10]}}/{{c.data[5:7]}}</small></div><div class="student-meal"><span class="tag">{{c.refeicao}}</span><p>{{c.descricao}}</p><small class="weekday-name">{{dias_semana[c.data]}}</small></div><span class="meal-icon">✦</span></article>
+{% else %}<div class="empty-state">O cardápio desta semana ainda não foi publicado. Volte em breve! 💙</div>{% endfor %}</section><p class="student-note">Cardápio Iracema · Consulte as refeições da sua semana.</p>{% endblock %}

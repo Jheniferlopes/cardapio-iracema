@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading">
+  <div><span class="eyebrow blue">ACESSOS</span><h1>Usuários e alunos</h1><p>Cadastre a equipe e crie acessos para os estudantes consultarem o cardápio semanal.</p></div>
+</div>
+<section class="panel">
+  <h2>Novo cadastro</h2><p class="help-text">{% if session.tipo == 'Secretaria' %}A Secretaria pode cadastrar somente usuários da Cozinha e Alunos.{% else %}O Administrador pode cadastrar todos os perfis.{% endif %}</p>
+  <form method="post" class="form-grid">
+    <label>Nome completo<input name="nome" required></label>
+    <label>Login<input name="login" required></label>
+    <label>Senha (mínimo 8 caracteres)<input name="senha" type="password" minlength="8" required></label>
+    <label>Perfil<select name="tipo" id="tipo" >{% for p in perfis %}<option>{{ p }}</option>{% endfor %}</select></label>
+    <label class="aluno-field">Matrícula<input name="matricula" placeholder="Número da matrícula"></label>
+    <label class="aluno-field">Turma<input name="turma" placeholder="Ex.: 5º ano B"></label>
+    <button class="primary" type="submit">＋ Criar acesso</button>
+  </form>
+</section>
+<section class="panel">
+  <div class="panel-title"><h2>Alunos e equipe cadastrados</h2><span class="count">{{ usuarios|length }} resultados</span></div>
+  <form method="get" class="form-grid">
+    <label class="wide">Buscar por nome, matrícula, turma ou login<input name="q" value="{{ busca }}" placeholder="Digite para localizar alguém..."></label>
+    <button class="primary" type="submit">Pesquisar</button>
+    <a class="button" href="{{ url_for('usuarios') }}">Limpar busca</a>
+  </form>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Nome</th><th>Login</th><th>Perfil</th><th>Matrícula</th><th>Turma</th><th>Ações</th></tr>
+      {% for u in usuarios %}
+      <tr>
+        <td><b>{{ u.nome }}</b></td><td>{{ u.login }}</td><td><span class="tag">{{ u.tipo }}</span></td>
+        <td>{{ u.matricula or '—' }}</td><td>{{ u.turma or '—' }}</td>
+        <td>
+          {% if u.id != session.get('usuario_id') %}
+          <form method="post" action="{{ url_for('excluir_usuario', usuario_id=u.id) }}" class="confirm-delete">
+            <button type="submit" class="danger-button">Excluir</button>
+          </form>
+          {% else %}<span class="count">Usuário atual</span>{% endif %}
+        </td>
+      </tr>
+      {% else %}<tr><td colspan="6">Nenhuma pessoa encontrada.</td></tr>{% endfor %}
+    </table>
+  </div>
+  <p class="help-text">O histórico de movimentações e consumos é preservado mesmo quando um usuário é excluído.</p>
+</section>
+<style>
+.danger-button{background:#b42318;color:#fff;border:0;border-radius:9px;padding:9px 13px;font-weight:600;cursor:pointer}
+.danger-button:hover{background:#8f1b13}
+.help-text{color:var(--muted,#64748b);font-size:.88rem;margin-top:14px}
+</style>
+{% endblock %}
